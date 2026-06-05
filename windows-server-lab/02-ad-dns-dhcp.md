@@ -85,3 +85,26 @@
 - Resolved by flushing DNS cache and restarting NetLogon service
 - Replication confirmed healthy after NetLogon restart on DC02
 - Both DC01 and DC02 showing 0/5 failures
+
+
+## Active Directory OU Structure
+Created Contoso OU with departmental sub-OUs:
+- Contoso/IT
+- Contoso/Management
+- Contoso/HR
+- Contoso/Computers
+
+## Domain Users Created
+| Name | Username | OU |
+|---|---|---|
+| John Smith | jsmith | Contoso/IT |
+| Jane Doe | jdoe | Contoso/Management |
+
+## Computer Accounts
+- PC01 moved from default Computers container to Contoso/Computers
+
+## Screenshots
+![OU Structure](../images/windows-server-lab/02-ad-dns-dhcp/AD-OU-structure.png)
+![PC01 in Computers OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-PC01-moved.png)
+![John Smith in IT OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-users-created1.png)
+![Jane Doe in Management OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-users-created2.png)
