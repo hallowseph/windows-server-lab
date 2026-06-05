@@ -47,3 +47,29 @@
 - Static IP set before domain join
 - Successfully joined TestNet.Domain
 - Promoted to secondary domain controller
+
+## PC02 Setup
+- OS: Windows 11 Education 25H2
+- Local account created: User02
+- Computer renamed: PC02
+- Network: DHCP via DC01 — assigned 192.168.10.52
+- DNS: 192.168.10.1 (DC01)
+- Domain joined: TestNet.Domain
+- Verified in AD — moved to Contoso/Computers OU
+
+## Screenshots
+![PC02 Network Settings](../images/windows-server-lab/01-vm-setup/PC02-network-settings.png)
+![PC02 Domain Join](../images/windows-server-lab/01-vm-setup/PC02-domain-join.png)
+![PC02 System Properties](../images/windows-server-lab/01-vm-setup/PC02-system-properties.png)
+![PC02 in AD Computers OU](../images/windows-server-lab/01-vm-setup/AD-PC02-moved.png)
+
+## VM Status Update
+| VM     | OS                        | RAM  | Disk   | Status      |
+|--------|---------------------------|------|--------|-------------|
+| DC01   | Windows Server 2025 Std   | 2 GB | 60 GB  | ✅ Complete |
+| DC02   | Windows Server 2025 Std   | 2 GB | 60 GB  | ✅ Complete |
+| PC01   | Windows 11 Education 25H2 | 4 GB | 64 GB  | ✅ Complete |
+| PC02   | Windows 11 Education 25H2 | 4 GB | 64 GB  | ✅ Complete |
+| FS01   | Windows Server 2025 Std   | 2 GB | 80 GB  | ⏳ Pending  |
+| WEB01  | Windows Server 2025 Std   | 2 GB | 60 GB  | ⏳ Pending  |
+| WSUS01 | Windows Server 2025 Std   | 4 GB | 100 GB | ⏳ Pending  |
