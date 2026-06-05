@@ -83,3 +83,5 @@
 - nslookup confirmed DC02 resolving correctly at 192.168.10.2
 - DNS timeout warning is cosmetic IPv6 issue, not functional
 - Resolved by flushing DNS cache and restarting NetLogon service
+- Replication confirmed healthy after NetLogon restart on DC02
+- Both DC01 and DC02 showing 0/5 failures
