@@ -22,3 +22,25 @@
 - Yellow warnings on prerequisites check are normal in a lab environment
 - Server automatically restarted after promotion
 - Login after restart uses TESTNET\Administrator
+
+## DHCP Configuration
+- Role installed on DC01.TestNet.Domain
+- Authorised in Active Directory via post-install wizard
+
+### Scope: LabScope
+| Setting          | Value              |
+|------------------|--------------------|
+| IP Range         | 192.168.10.50–100  |
+| Subnet Mask      | 255.255.255.0      |
+| Default Gateway  | 192.168.10.254     |
+| DNS Server       | 192.168.10.1       |
+| DNS Domain       | TestNet.Domain     |
+| Lease Duration   | 8 days             |
+| Status           | Active             |
+
+## Screenshots
+![DHCP Install Success](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-install-success.png)
+![DHCP Post Install](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-post-install.png)
+![DHCP LabScope Active](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-LabScope-active.png)
+![DHCP Scope Properties](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-scope-properties.png)
+![DHCP Server Manager](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-server-manager.png)
