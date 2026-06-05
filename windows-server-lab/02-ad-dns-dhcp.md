@@ -78,3 +78,8 @@
 - After promotion DC02 handles its own DNS replication
 - Both DCs running Windows Server 2025
 - Replication between DC01 and DC02 automatic via AD DS
+- Post-promotion repadmin error 1908 observed on DC01
+- dcdiag /test:dns showed all tests passing on DC01
+- nslookup confirmed DC02 resolving correctly at 192.168.10.2
+- DNS timeout warning is cosmetic IPv6 issue, not functional
+- Resolved by flushing DNS cache and restarting NetLogon service
