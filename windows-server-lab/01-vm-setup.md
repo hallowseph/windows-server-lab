@@ -20,16 +20,6 @@
 | PC01     | DHCP          | Domain Client               |
 | PC02     | DHCP          | Domain Client               |
 
-## VMs Created
-| VM     | OS                      | RAM  | Disk  | Status    |
-|--------|-------------------------|------|-------|-----------|
-| DC01   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
-| DC02   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
-| PC01   | Windows 11 Education 25H2 | 4 GB | 64 GB | ⏳ Pending |
-| PC02   | Windows 11 Education 25H2 | 4 GB | 64 GB | ⏳ Pending |
-| FS01   | Windows Server 2025 Std | 2 GB | 80 GB | ⏳ Pending  |
-| WEB01  | Windows Server 2025 Std | 2 GB | 60 GB | ⏳ Pending  |
-| WSUS01 | Windows Server 2025 Std | 4 GB | 100 GB| ⏳ Pending  |
 
 ## Screenshots
 ![Hyper-V Manager](../images/windows-server-lab/01-vm-setup/Hyper-V-Manager.png)
@@ -38,7 +28,7 @@
 ## Notes
 - LabSwitch set to Internal only — VMs communicate with each other
   and the host but not directly to the internet
-- DC01 renamed to DC01 on first boot before any roles installedvv
+- DC01 renamed to DC01 on first boot before any roles installed
 
 ## DC02 VM
 - Created as fresh install (Option B)
@@ -47,6 +37,21 @@
 - Static IP set before domain join
 - Successfully joined TestNet.Domain
 - Promoted to secondary domain controller
+
+## PC01 Setup
+- OS: Windows 11 Education 25H2
+- Local account created: User01
+- Computer renamed: PC01
+- Network: DHCP via DC01
+- DNS: 192.168.10.1 (DC01)
+- Domain joined: TestNet.Domain
+- Verified in AD — moved to Contoso/Computers OU
+
+## Screenshots
+![PC01 Desktop First Boot](../images/windows-server-lab/01-vm-setup/PC01-desktop-first-boot.png)
+![PC01 Domain Join](../images/windows-server-lab/01-vm-setup/PC01-domain-join.png)
+![PC01 System Properties](../images/windows-server-lab/01-vm-setup/PC01-system-properties.png)
+![PC01 in AD Computers](../images/windows-server-lab/01-vm-setup/PC01-in-ad-computers.png)
 
 ## PC02 Setup
 - OS: Windows 11 Education 25H2

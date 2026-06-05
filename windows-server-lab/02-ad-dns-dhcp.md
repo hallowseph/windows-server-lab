@@ -73,6 +73,11 @@
 ![DC02 AD DS Success](../images/windows-server-lab/02-ad-dns-dhcp/DC02-adds-success.png)
 ![DC02 Server Manager](../images/windows-server-lab/02-ad-dns-dhcp/DC02-server-manager.png)
 
+## Replication Verification Screenshots
+![Replication Summary](../images/windows-server-lab/02-ad-dns-dhcp/DC01-repadmin-replsummary.png)
+![Replication Fixed](../images/windows-server-lab/02-ad-dns-dhcp/DC01-repadmin-fixed.png)
+![nslookup DC02](../images/windows-server-lab/02-ad-dns-dhcp/DC01-nslookup-dc02.png)
+
 ## Notes
 - DC02 DNS points to DC01 (192.168.10.1) before promotion
 - After promotion DC02 handles its own DNS replication
@@ -102,6 +107,7 @@ Created Contoso OU with departmental sub-OUs:
 
 ## Computer Accounts
 - PC01 moved from default Computers container to Contoso/Computers
+- PC02 moved from default Computers container to Contoso/Computers
 
 ## Screenshots
 ![OU Structure](../images/windows-server-lab/02-ad-dns-dhcp/AD-OU-structure.png)
