@@ -36,3 +36,11 @@
 - LabSwitch set to Internal only — VMs communicate with each other
   and the host but not directly to the internet
 - DC01 renamed to DC01 on first boot before any roles installed
+
+## DC01 Static IP Configuration
+- IP Address: 192.168.10.1
+- Subnet Mask: 255.255.255.0
+- Default Gateway: (blank — pfSense to be added later)
+- Preferred DNS: 127.0.0.1 (DC01 will serve as its own DNS)
+
+![DC01 Static IP](../images/windows-server-lab/01-vm-setup/DC01-static-ip.png)
