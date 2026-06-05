@@ -21,12 +21,15 @@
 | PC02     | DHCP          | Domain Client               |
 
 ## VMs Created
-| VM     | OS                          | RAM  | Disk  |
-|--------|-----------------------------|------|-------|
-| DC01   | Windows Server 2025 Std     | 2 GB | 60 GB |
-| DC02   | Windows Server 2025 Std     | 2 GB | 60 GB |
-| PC01   | Windows 11 Enterprise       | 2 GB | 50 GB |
-| PC02   | Windows 11 Enterprise       | 2 GB | 50 GB |
+| VM     | OS                      | RAM  | Disk  | Status    |
+|--------|-------------------------|------|-------|-----------|
+| DC01   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
+| DC02   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
+| PC01   | Windows 11              | 2 GB | 50 GB | ⏳ Pending  |
+| PC02   | Windows 11              | 2 GB | 50 GB | ⏳ Pending  |
+| FS01   | Windows Server 2025 Std | 2 GB | 80 GB | ⏳ Pending  |
+| WEB01  | Windows Server 2025 Std | 2 GB | 60 GB | ⏳ Pending  |
+| WSUS01 | Windows Server 2025 Std | 4 GB | 100 GB| ⏳ Pending  |
 
 ## Screenshots
 ![Hyper-V Manager](../images/windows-server-lab/01-vm-setup/Hyper-V-Manager.png)
@@ -35,4 +38,12 @@
 ## Notes
 - LabSwitch set to Internal only — VMs communicate with each other
   and the host but not directly to the internet
-- DC01 renamed to DC01 on first boot before any roles installed
+- DC01 renamed to DC01 on first boot before any roles installedvv
+
+## DC02 VM
+- Created as fresh install (Option B)
+- Renamed to DC02 on first boot
+- Assigned to LabSwitch
+- Static IP set before domain join
+- Successfully joined TestNet.Domain
+- Promoted to secondary domain controller
