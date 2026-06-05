@@ -25,8 +25,8 @@
 |--------|-------------------------|------|-------|-----------|
 | DC01   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
 | DC02   | Windows Server 2025 Std | 2 GB | 60 GB | ✅ Complete |
-| PC01   | Windows 11              | 2 GB | 50 GB | ⏳ Pending  |
-| PC02   | Windows 11              | 2 GB | 50 GB | ⏳ Pending  |
+| PC01   | Windows 11 Education 25H2 | 4 GB | 64 GB | ⏳ Pending |
+| PC02   | Windows 11 Education 25H2 | 4 GB | 64 GB | ⏳ Pending |
 | FS01   | Windows Server 2025 Std | 2 GB | 80 GB | ⏳ Pending  |
 | WEB01  | Windows Server 2025 Std | 2 GB | 60 GB | ⏳ Pending  |
 | WSUS01 | Windows Server 2025 Std | 4 GB | 100 GB| ⏳ Pending  |
