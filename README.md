@@ -16,19 +16,22 @@ fictional company called Contoso.
 | Firewall | pfSense CE 2.8.1 |
 
 ## Network Topology
+
+```
 Internet
-│
-[pfSense 192.168.10.254] — Firewall, NAT, DNS
-│
+    │
+[pfSense 192.168.10.254] — Firewall, NAT
+    │
 [LabSwitch — 192.168.10.0/24]
-│
-├── DC01 (192.168.10.1) — AD DS, DNS, DHCP
-├── DC02 (192.168.10.2) — Secondary DC
-├── FS01 (192.168.10.3) — File Server, DFS
-├── WEB01 (192.168.10.4) — IIS Intranet
-├── WSUS01 (192.168.10.5) — Patch Management
-├── PC01 (DHCP) — Domain Client
-└── PC02 (DHCP) — Domain Client
+    │
+    ├── DC01 (192.168.10.1) — AD DS, DNS, DHCP
+    ├── DC02 (192.168.10.2) — Secondary DC
+    ├── FS01 (192.168.10.3) — File Server, DFS
+    ├── WEB01 (192.168.10.4) — IIS Intranet, SSL
+    ├── WSUS01 (192.168.10.5) — Patch Management
+    ├── PC01 (DHCP) — Domain Client
+    └── PC02 (DHCP) — Domain Client
+```
 
 ## What Was Built
 
