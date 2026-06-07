@@ -54,7 +54,7 @@ PC01 successfully joined to `TestNet.Domain`.
 
 System Properties on PC01 confirming domain membership.
 
-![PC01 system properties](../images/01-vm-setup/PC01-System properties.png)
+![PC01 system properties](../images/01-vm-setup/PC01-System-properties.png)
 
 ### PC01 Desktop — First Boot
 
