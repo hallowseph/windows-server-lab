@@ -1,4 +1,4 @@
-# Windows Server Enterprise Lab
+vvv# Windows Server Enterprise Lab
 
 A fully functional enterprise network built on Microsoft 
 Hyper-V, simulating a real-world IT infrastructure for a 
@@ -111,6 +111,10 @@ Each component is fully documented in the
 - PowerShell commands used
 - Screenshots at every stage
 - Troubleshooting notes
+
+
+## Author
+Joseph Reanzares — [github.com/hallowseph](https://github.com/hallowseph)
 
 ## Live Portfolio
 
