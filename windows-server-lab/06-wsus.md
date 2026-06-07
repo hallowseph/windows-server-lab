@@ -1,59 +1,121 @@
-# 06 — WSUS (Windows Server Update Services)
+# 06 — WSUS Patch Management
 
-## Server Details
-- Hostname: WSUS01
-- IP Address: 192.168.10.5
-- OS: Windows Server 2025 Standard
-- Role: Windows Server Update Services
-- Domain: TestNet.Domain
-- Update storage: C:\WSUS
+This section covers the setup of WSUS01 as the Contoso patch management server, including role installation, configuration, product and classification selection, sync scheduling, and GPO-based client targeting.
 
-## Roles Installed
-- Windows Server Update Services
-- WID Connectivity (Windows Internal Database)
-- WSUS Services
+---
+
+## WSUS01 — Initial Setup
+
+### WSUS01 Static IP
+
+WSUS01 assigned static IP `192.168.10.5`, DNS pointing to DC01.
+
+![WSUS01 static IP](../images/06-wsus/WSUS01-static-ip.png)
+
+### WSUS01 Ping Test
+
+WSUS01 pinging DC01, confirming connectivity before domain join.
+
+![WSUS01 ping DC01](../images/06-wsus/WSUS01-ping-dc01.png)
+
+### WSUS01 Domain Join
+
+WSUS01 joined to `TestNet.Domain`.
+
+![WSUS01 domain join](../images/06-wsus/WSUS01-domain-join.png)
+
+### WSUS Role Installed
+
+Windows Server Update Services role installed on WSUS01.
+
+![WSUS01 role installed](../images/06-wsus/WSUS01-role-installed.png)
+
+### WSUS01 Server Manager
+
+Server Manager on WSUS01 confirming the WSUS role is installed and running.
+
+![WSUS01 Server Manager](../images/06-wsus/WSUS01-server-manager.png)
+
+### WSUS Post-Install
+
+Post-installation configuration complete — WSUS content directory and database configured.
+
+![WSUS01 post install](../images/06-wsus/WSUS01-post-install.png)
+
+---
 
 ## WSUS Configuration
-| Setting | Value |
+
+### Update Source
+
+WSUS configured to sync updates from Microsoft Update directly.
+
+![WSUS01 update source](../images/06-wsus/WSUS01-update-source.png)
+
+### Products Selected
+
+Windows Server 2025 and Windows 11 selected as the target products for update synchronisation.
+
+![WSUS01 products](../images/06-wsus/WSUS01-products.png)
+
+### Classifications Selected
+
+Update classifications configured — Critical Updates, Security Updates, and Definition Updates selected.
+
+![WSUS01 classifications](../images/06-wsus/WSUS01-classifications.png)
+
+### Sync Schedule
+
+Automatic synchronisation schedule configured to keep updates current.
+
+![WSUS01 sync schedule](../images/06-wsus/WSUS01-sync-schedule.png)
+
+### WSUS Configured
+
+WSUS configuration wizard completed — server ready to serve updates to domain clients.
+
+![WSUS01 configured](../images/06-wsus/WSUS01-configured.png)
+
+### WSUS Console
+
+WSUS management console showing the server is online and synchronisation is active.
+
+![WSUS01 console](../images/06-wsus/WSUS01-console.png)
+
+---
+
+## GPO — Client Targeting
+
+### GPO Update Server
+
+GPO configured to point all domain computers to `WSUS01:8530` for Windows Update.
+
+![WSUS01 GPO update server](../images/06-wsus/WSUS01-gpo-update-server.png)
+
+### GPO Auto Update Settings
+
+Automatic update behaviour configured via GPO — clients set to download and notify before install.
+
+![WSUS01 GPO auto update](../images/06-wsus/WSUS01-gpo-auto-update.png)
+
+### GPO Client-Side Targeting
+
+Client-side targeting enabled via GPO — computers automatically placed into target groups in the WSUS console.
+
+![WSUS01 GPO targeting](../images/06-wsus/WSUS01-gpo-targeting.png)
+
+---
+
+## Summary
+
+| Component | Detail |
 |---|---|
-| Upstream server | Microsoft Update |
-| Proxy server | None |
-| Languages | English only |
-| Products | Windows 10 family, Windows Server 2019 |
-| Classifications | Critical Updates, Security Updates, Definition Updates |
-| Sync schedule | Automatic, once daily |
+| WSUS server | WSUS01 — 192.168.10.5 |
+| Update source | Microsoft Update |
+| Products | Windows Server 2025, Windows 11 |
+| Client pointing | GPO → WSUS01:8530 |
+| Client targeting | GPO-based, automatic group assignment |
 
-## Group Policy — Contoso-WSUS-Policy
-- Linked to: Contoso/Computers OU
-- Settings configured:
-  - Specify intranet update service: http://192.168.10.5:8530
-  - Automatic Updates detection frequency: 6 hours
-  - Enable client-side targeting: Workstations
-  - Configure Automatic Updates: Auto download and notify
-  - No auto-restart with logged on users: Enabled
+---
 
-## Troubleshooting Notes
-- Initial WSUS sync failed — WebException: remote name could
-  not be resolved: sws.update.microsoft.com
-- Cause: LabSwitch is internal only — no internet access
-- Resolution: Configured WSUS manually via Options panel
-  instead of using the configuration wizard
-- Windows 11 and Windows Server 2025 not available in product
-  list — WSUS requires internet sync to populate full product
-  catalogue. Windows 10 and Server 2019 selected as closest
-  available alternatives
-- In production: WSUS would have internet access and sync
-  automatically with Microsoft Update servers
-
-## Screenshots
-![WSUS01 Role Installed](../images/windows-server-lab/06-wsus/WSUS01-role-installed.png)
-![WSUS01 Post Install](../images/windows-server-lab/06-wsus/WSUS01-post-install.png)
-![WSUS01 Console](../images/windows-server-lab/06-wsus/WSUS01-console.png)
-![WSUS01 Update Source](../images/windows-server-lab/06-wsus/WSUS01-update-source.png)
-![WSUS01 Products](../images/windows-server-lab/06-wsus/WSUS01-products.png)
-![WSUS01 Classifications](../images/windows-server-lab/06-wsus/WSUS01-classifications.png)
-![WSUS01 Sync Schedule](../images/windows-server-lab/06-wsus/WSUS01-sync-schedule.png)
-![WSUS01 GPO Configured](../images/windows-server-lab/06-wsus/WSUS01-gpo-configured.png)
-![WSUS01 GPO Update Server](../images/windows-server-lab/06-wsus/WSUS01-gpo-update-server.png)
-![WSUS01 GPO Targeting](../images/windows-server-lab/06-wsus/WSUS01-gpo-targeting.png)
-![WSUS01 GPO Auto Update](../images/windows-server-lab/06-wsus/WSUS01-gpo-auto-update.png)
+[← 05 — IIS Web Server](05-iis-webserver.md) | [Next: 07 — pfSense →](07-pfsense.md)

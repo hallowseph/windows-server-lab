@@ -1,86 +1,103 @@
 # 09 — Backup & Disaster Recovery
 
-## Overview
-Windows Server Backup configured on DC01 to provide
-system state and full volume backup capability.
-Follows the 3-2-1 backup principle:
-- 3 copies of data
-- 2 different storage types
-- 1 offsite copy (in production)
+This section covers the setup of Windows Server Backup on DC01, including a dedicated backup volume, full system state backup, and documented DR procedures for common failure scenarios.
 
-## Backup Configuration on DC01
+---
 
-### Backup Drive
-- Added second virtual disk: DC01-Backup.vhdx
-- Size: 30 GB dynamically expanding
-- Initialized: GPT partition style
-- Drive letter: E:
-- Label: Backup
-- Format: NTFS
+## Windows Server Backup — Setup
 
-### Backup Job
-| Setting | Value |
+### Backup Feature Installed
+
+Windows Server Backup feature installed on DC01 via Server Manager.
+
+![Backup feature installed](../images/09-backup-dr/Backup-feature-installed.png)
+
+### Backup Drive Setup
+
+Dedicated 30GB backup volume (E: drive) added to DC01 and initialised for use as the backup destination.
+
+![Backup drive setup](../images/09-backup-dr/Backup-drive-setup.png)
+
+---
+
+## Running a Backup
+
+### Backup Confirmation
+
+Backup schedule and destination confirmed before the first backup run — full volume and system state selected.
+
+![Backup confirmation](../images/09-backup-dr/Backup-confirmation.png)
+
+### Backup WSB
+
+Windows Server Backup console showing the backup job configured and ready to run.
+
+![Backup WSB](../images/09-backup-dr/Backup-wsb.png)
+
+### Backup In Progress
+
+Backup running — system state and full volume being written to the E: backup drive.
+
+![Backup in progress](../images/09-backup-dr/Backup-in-progress.png)
+
+### Backup Summary
+
+Backup job summary showing the data transferred, time taken, and backup destination.
+
+![Backup summary](../images/09-backup-dr/Backup-summary.png)
+
+### Backup Complete
+
+Backup completed successfully with no errors. Status shown in the Windows Server Backup console.
+
+![Backup complete](../images/09-backup-dr/Backup-complete.png)
+
+---
+
+## DR Procedures
+
+The following scenarios are documented as runbooks for common recovery situations in this lab environment.
+
+### DC failure — secondary DC takeover
+
+If DC01 becomes unavailable, DC02 can serve authentication and DNS for the domain. Steps:
+1. Verify DC02 is reachable and AD DS service is running
+2. Point client DNS to DC02 (`192.168.10.2`) temporarily
+3. Seize FSMO roles on DC02 if DC01 will not recover: `ntdsutil` → roles → seize
+4. Rebuild DC01 and re-promote once hardware is restored
+
+### Accidental user deletion
+
+1. Open AD Users and Computers → View → Enable Advanced Features
+2. Browse to the Deleted Objects container
+3. Right-click the deleted user → Restore
+4. Verify the account is back in the correct OU and re-enable if needed
+
+### System state restore on DC01
+
+1. Boot DC01 into Directory Services Restore Mode (DSRM) — F8 at boot
+2. Open Windows Server Backup → Recover → select the latest backup from E:
+3. Choose System State recovery
+4. Reboot normally after restore completes
+
+### GPO not applying to clients
+
+1. Run `gpresult /r` on the affected client to see which GPOs are applying
+2. Run `gpupdate /force` to force a refresh
+3. Check the client is in the correct OU in AD Users and Computers
+4. Verify DNS is resolving the domain controller correctly with `nslookup`
+
+---
+
+## Summary
+
+| Component | Detail |
 |---|---|
-| Type | One-time backup (manual) |
-| Items | System state, Local disk C: |
-| Destination | E: (Backup drive) |
-| Method | VSS full backup |
+| Backup tool | Windows Server Backup |
+| Backup target | DC01 — E: drive (30GB dedicated volume) |
+| Backup type | Full volume + system state |
+| DR procedures | DC failure, user restore, system state, GPO |
 
-## Disaster Recovery Plan
+---
 
-### Scenario 1 — DC01 failure
-1. Boot DC02 — domain still functional via secondary DC
-2. Restore DC01 from backup using Windows Server Backup
-3. Boot from Windows Server 2025 ISO → Repair → System Image Recovery
-4. Point to E: backup drive
-5. Verify AD replication after restore
-
-### Scenario 2 — AD object accidentally deleted
-1. Open Active Directory Users and Computers
-2. Enable Advanced Features → View menu
-3. Navigate to Deleted Objects container
-4. Right-click deleted object → Restore
-5. Verify object is restored in correct OU
-
-### Scenario 3 — GPO accidentally deleted
-1. Open Group Policy Management
-2. Check if backup exists in SYSVOL
-3. Restore from Windows Server Backup
-4. Or recreate from documentation in this repo
-
-## 3-2-1 Backup Strategy
-| Copy | Location | Type |
-|---|---|---|
-| 1 | DC01 C: drive (live) | Primary |
-| 2 | DC01 E: drive (backup) | Local backup |
-| 3 | Offsite/cloud (production) | Remote backup |
-
-## PowerShell Backup Commands
-```powershell
-# Check backup summary
-Get-WBSummary
-
-# Initialize backup drive
-Initialize-Disk -Number 1 -PartitionStyle GPT
-New-Partition -DiskNumber 1 -UseMaximumSize -DriveLetter E
-Format-Volume -DriveLetter E -FileSystem NTFS `
-    -NewFileSystemLabel "Backup" -Confirm:$false
-
-# Check backup policy
-Get-WBPolicy
-```
-
-## Screenshots
-![Backup Feature Installed](../images/windows-server-lab/09-backup-dr/Backup-feature-installed.png)
-![Backup Drive Setup](../images/windows-server-lab/09-backup-dr/Backup-drive-setup.png)
-![Backup Confirmation](../images/windows-server-lab/09-backup-dr/Backup-confirmation.png)
-![Backup In Progress](../images/windows-server-lab/09-backup-dr/Backup-in-progress.png)
-![Backup Complete](../images/windows-server-lab/09-backup-dr/Backup-complete.png)
-![Backup Summary](../images/windows-server-lab/09-backup-dr/Backup-summary.png)
-
-## Notes
-- In production: backup should go to a separate physical server
-  or cloud storage (Azure Backup, Veeam)
-- System state backup includes AD database, SYSVOL, registry
-- Bare metal recovery allows full server rebuild from backup
-- Test restores should be performed regularly in production
+[← 08 — PowerShell Automation](08-powershell-automation.md) | [← Back to home](../index.md)

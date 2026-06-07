@@ -1,116 +1,179 @@
 # 02 — Active Directory, DNS & DHCP
 
-## Domain Creation
-- Forest: TestNet.Domain
-- NetBIOS name: TESTNET
-- Functional level: Windows Server 2025
-- Primary DC: DC01 (192.168.10.1)
-- DSRM password configured
+This section covers the full setup of Active Directory Domain Services on DC01, promotion of DC02 as a secondary domain controller, DNS configuration, and DHCP scope deployment.
 
-## Roles Installed on DC01
-- Active Directory Domain Services (AD DS)
-- DNS Server
-- Global Catalog
+---
 
-## Screenshots
-![AD DS Install Success](../images/windows-server-lab/02-ad-dns-dhcp/AD-DS-install-success.png)
-![Domain Review Options](../images/windows-server-lab/02-ad-dns-dhcp/DC01-domain-review.png)
-![Server Manager Post-Promotion](../images/windows-server-lab/02-ad-dns-dhcp/DC01-server-manager.png)
-![AD Users and Computers](../images/windows-server-lab/02-ad-dns-dhcp/DC01-ad-users-computers.png)
+## DC01 — Domain Controller Setup
 
-## Notes
-- Yellow warnings on prerequisites check are normal in a lab environment
-- Server automatically restarted after promotion
-- Login after restart uses TESTNET\Administrator
+### AD DS Installation
 
-## DHCP Configuration
-- Role installed on DC01.TestNet.Domain
-- Authorised in Active Directory via post-install wizard
+After installing the AD DS role, the post-deployment configuration wizard promoted DC01 as the forest root domain controller for `TestNet.Domain`.
 
-### Scope: LabScope
-| Setting          | Value              |
-|------------------|--------------------|
-| IP Range         | 192.168.10.50–100  |
-| Subnet Mask      | 255.255.255.0      |
-| Default Gateway  | 192.168.10.254     |
-| DNS Server       | 192.168.10.1       |
-| DNS Domain       | TestNet.Domain     |
-| Lease Duration   | 8 days             |
-| Status           | Active             |
+![AD DS install success](../images/02-ad-dns-dhcp/AD-DS-install-success.png)
 
-## Screenshots
-![DHCP Install Success](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-install-success.png)
-![DHCP Post Install](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-post-install.png)
-![DHCP LabScope Active](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-LabScope-active.png)
-![DHCP Scope Properties](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-scope-properties.png)
-![DHCP Server Manager](../images/windows-server-lab/02-ad-dns-dhcp/DHCP-server-manager.png)
+### Server Manager — DC01
 
+Server Manager confirming AD DS, DNS, and DHCP roles are all installed and running on DC01.
 
-## DC02 Setup
+![DC01 Server Manager](../images/02-ad-dns-dhcp/DC01-server-manager.png)
 
-### Static IP Configuration
-- IP Address: 192.168.10.2
-- Subnet Mask: 255.255.255.0
-- Default Gateway: 192.168.10.254
-- Preferred DNS: 192.168.10.1 (points to DC01)
+### Domain Review
 
-### Domain Join
-- Joined domain: TestNet.Domain
-- Credentials used: TESTNET\Administrator
+Summary screen during DC01 promotion showing the domain name, NetBIOS name, and forest/domain functional levels.
 
-### AD DS Promotion
-- Operation: Add domain controller to existing domain
-- Domain: TestNet.Domain
-- DNS Server: Yes
-- Global Catalog: Yes
-- DSRM password configured
-- Server: DC02.TestNet.Domain
+![DC01 domain review](../images/02-ad-dns-dhcp/DC01-domain-review.png)
 
-## DC02 Screenshots
-![DC02 Static IP](../images/windows-server-lab/02-ad-dns-dhcp/DC02-static-ip.png)
-![DC02 Ping DC01](../images/windows-server-lab/02-ad-dns-dhcp/DC02-ping-dc01.png)
-![DC02 Domain Join](../images/windows-server-lab/02-ad-dns-dhcp/DC02-domain-join.png)
-![DC02 AD DS Success](../images/windows-server-lab/02-ad-dns-dhcp/DC02-adds-success.png)
-![DC02 Server Manager](../images/windows-server-lab/02-ad-dns-dhcp/DC02-server-manager.png)
+### Active Directory Users and Computers
 
-## Replication Verification Screenshots
-![Replication Summary](../images/windows-server-lab/02-ad-dns-dhcp/DC01-repadmin-replsummary.png)
-![Replication Fixed](../images/windows-server-lab/02-ad-dns-dhcp/DC01-repadmin-fixed.png)
-![nslookup DC02](../images/windows-server-lab/02-ad-dns-dhcp/DC01-nslookup-dc02.png)
+AD Users and Computers on DC01 showing the domain structure with default containers visible.
 
-## Notes
-- DC02 DNS points to DC01 (192.168.10.1) before promotion
-- After promotion DC02 handles its own DNS replication
-- Both DCs running Windows Server 2025
-- Replication between DC01 and DC02 automatic via AD DS
-- Post-promotion repadmin error 1908 observed on DC01
-- dcdiag /test:dns showed all tests passing on DC01
-- nslookup confirmed DC02 resolving correctly at 192.168.10.2
-- DNS timeout warning is cosmetic IPv6 issue, not functional
-- Resolved by flushing DNS cache and restarting NetLogon service
-- Replication confirmed healthy after NetLogon restart on DC02
-- Both DC01 and DC02 showing 0/5 failures
+![DC01 AD Users and Computers](../images/02-ad-dns-dhcp/DC01-ad-users-computers.png)
 
+---
 
-## Active Directory OU Structure
-Created Contoso OU with departmental sub-OUs:
-- Contoso/IT
-- Contoso/Management
-- Contoso/HR
-- Contoso/Computers
+## Active Directory — OU Structure & Users
 
-## Domain Users Created
-| Name | Username | OU |
-|---|---|---|
-| John Smith | jsmith | Contoso/IT |
-| Jane Doe | jdoe | Contoso/Management |
+### OU Structure
 
-## Computer Accounts
-- PC01 moved from default Computers container to Contoso/Computers
-- PC02 moved from default Computers container to Contoso/Computers
+The Contoso OU structure with IT, Management, HR, and Computers OUs created under the domain.
 
-## Screenshots
-![OU Structure](../images/windows-server-lab/02-ad-dns-dhcp/AD-OU-structure.png)
-![PC01 in Computers OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-PC01-moved.png)
-![John Smith in IT OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-users-created1.png)
-![Jane Doe in Management OU](../images/windows-server-lab/02-ad-dns-dhcp/AD-users-created2.png)
+![AD OU structure](../images/02-ad-dns-dhcp/AD-OU-structure.png)
+
+### Users Created — Page 1
+
+First batch of domain user accounts created across the Contoso departments.
+
+![AD users created 1](../images/02-ad-dns-dhcp/AD-users-created1.png)
+
+### Users Created — Page 2
+
+Second batch of user accounts, completing the 8 domain users spread across all OUs.
+
+![AD users created 2](../images/02-ad-dns-dhcp/AD-users-created2.png)
+
+### PC01 Moved to Computers OU
+
+PC01 computer object moved from the default Computers container into the Contoso Computers OU for GPO targeting.
+
+![AD PC01 moved](../images/02-ad-dns-dhcp/AD-PC01-moved.png)
+
+### PC01 Visible in AD
+
+PC01 visible inside AD Users and Computers after joining the domain, confirming successful domain join.
+
+![DC01 AD Users and Computers with PC01](../images/02-ad-dns-dhcp/DC01-ad-users-computers-pc01.png)
+
+---
+
+## DC02 — Secondary Domain Controller
+
+### DC02 Static IP
+
+DC02 configured with static IP `192.168.10.2`, DNS pointing to DC01 at `192.168.10.1`.
+
+![DC02 static IP](../images/02-ad-dns-dhcp/DC02-static-ip.png)
+
+### DC02 Ping Test
+
+DC02 successfully pinging DC01 by IP before domain join, confirming network connectivity.
+
+![DC02 ping DC01](../images/02-ad-dns-dhcp/DC02-ping-dc01.png)
+
+### DC02 Domain Join
+
+DC02 joined to `TestNet.Domain` before being promoted to domain controller.
+
+![DC02 domain join](../images/02-ad-dns-dhcp/DC02-domain-join.png)
+
+### DC02 AD DS Promotion Success
+
+DC02 successfully promoted as a secondary domain controller in the `TestNet.Domain` forest.
+
+![DC02 AD DS success](../images/02-ad-dns-dhcp/DC02-adds-success.png)
+
+### DC02 Server Manager
+
+Server Manager on DC02 confirming AD DS and DNS roles are installed and running.
+
+![DC02 Server Manager](../images/02-ad-dns-dhcp/DC02-server-manager.png)
+
+---
+
+## DNS
+
+### NSLookup — DC01 Resolving DC02
+
+`nslookup` run on DC01 successfully resolving DC02 by hostname, confirming DNS is working correctly across both domain controllers.
+
+![DC01 nslookup DC02](../images/02-ad-dns-dhcp/DC01-nslookup-dc02.png)
+
+---
+
+## AD Replication
+
+### Repadmin — Initial Run
+
+First `repadmin /replsummary` run on DC01, used to identify any replication issues after DC02 promotion.
+
+![DC01 repadmin initial](../images/02-ad-dns-dhcp/DC01-repadmin.png)
+
+### Repadmin — Fixed
+
+`repadmin /replsummary` after resolving replication issues. Both domain controllers showing healthy replication with 0 failures.
+
+![DC01 repadmin fixed](../images/02-ad-dns-dhcp/DC01-repadmin-fixed.png)
+
+> **Troubleshooting note:** Replication initially failed because DC02's preferred DNS was not pointing to DC01, preventing it from locating the domain. Fixed by updating DC02's DNS to `192.168.10.1` and running `repadmin /syncall /AdeP` to force replication.
+
+---
+
+## DHCP
+
+### DHCP Install Success
+
+DHCP Server role successfully installed on DC01.
+
+![DHCP install success](../images/02-ad-dns-dhcp/DHCP-install-success.png)
+
+### DHCP Post-Install
+
+Post-installation configuration — DHCP authorised in Active Directory under the domain administrator account.
+
+![DHCP post install](../images/02-ad-dns-dhcp/DHCP-post-install.png)
+
+### DHCP Server Manager
+
+Server Manager confirming DHCP role is installed and running on DC01.
+
+![DHCP Server Manager](../images/02-ad-dns-dhcp/DHCP-server-manager.png)
+
+### DHCP Scope Properties
+
+LabScope configured with range `192.168.10.50–100`, subnet mask `255.255.255.0`, and default gateway `192.168.10.254` (pfSense).
+
+![DHCP scope properties](../images/02-ad-dns-dhcp/DHCP-scope-properties.png)
+
+### DHCP Scope Active
+
+LabScope activated and issuing leases to domain-joined client machines.
+
+![DHCP LabScope active](../images/02-ad-dns-dhcp/DHCP-LabScope-active.png)
+
+---
+
+## Summary
+
+| Component | Status |
+|---|---|
+| DC01 — Forest root DC | Configured |
+| DC02 — Secondary DC | Configured |
+| AD replication | Verified with repadmin |
+| OU structure | IT, Management, HR, Computers |
+| Domain users | 8 accounts created |
+| DNS | Forward and reverse zones on DC01 |
+| DHCP | Scope 192.168.10.50–100, authorised in AD |
+
+---
+
+[← 01 — VM Setup](01-vm-setup.md) | [Next: 03 — Group Policy →](03-group-policy.md)

@@ -1,84 +1,87 @@
 # 08 — PowerShell Automation
 
-## Overview
-PowerShell scripts written to automate common Active Directory
-administration tasks. All scripts stored in C:\Scripts on DC01
-and in the scripts/ folder of this repository.
+This section covers three PowerShell scripts written to automate common IT administration tasks — bulk user creation, AD user reporting, and automated home folder provisioning with NTFS permissions.
 
-## Scripts Written
+---
 
-### 1. New-LabUsers.ps1
-Bulk creates AD users from a CSV file. Reads user details
-from users.csv and creates accounts in the correct Contoso OUs.
+## New-LabUsers.ps1 — Bulk User Creation
 
-**Key concepts demonstrated:**
-- Import-Module ActiveDirectory
-- Import-Csv to read structured data
-- foreach loop to iterate users
-- New-ADUser with full parameter set
-- Error handling with -ErrorAction SilentlyContinue
-- ConvertTo-SecureString for secure password handling
-- Variable scoping fix for Get-ADUser -Filter
+This script reads from a CSV file and creates domain user accounts in bulk, assigning each user to the correct OU based on their department.
 
-**Troubleshooting note:**
-Variables cannot be used directly inside Get-ADUser filter
-script blocks. Must assign to a simple variable first:
-```powershell
-$username = $User.Username
-Get-ADUser -Filter {SamAccountName -eq $username}
-```
+### Bulk User Creation
 
-### 2. Get-UserReport.ps1
-Queries all users in the Contoso OU and generates a formatted
-report showing account status, last logon, and password age.
-Exports results to CSV at C:\Scripts\UserReport.csv.
+Script running on DC01 — creating all Contoso user accounts from a CSV file in a single execution.
 
-**Key concepts demonstrated:**
-- Get-ADUser with -Properties parameter
-- Conditional Write-Host colouring (green/red for enabled status)
-- Export-Csv for data export
-- Get-Date for report timestamps
+![PS bulk user creation](../images/08-powershell/PS-bulk-user-creation.png)
 
-### 3. New-UserShare.ps1
-Automatically creates personal home folders for all Contoso
-users with correct NTFS permissions. Each user receives
-FullControl of their own folder only.
+### Users in IT OU
 
-**Key concepts demonstrated:**
-- Test-Path for conditional folder creation
-- New-Item for directory creation
-- Get-Acl and Set-Acl for NTFS permission management
-- FileSystemAccessRule for permission objects
-- ContainerInherit and ObjectInherit for permission inheritance
+IT department users created by the script, visible in AD Users and Computers inside the IT OU.
 
-## CSV Structure
-Users are provisioned from a CSV file with this structure:
-```csv
-FirstName,LastName,Username,Department,OU
-Alice,Johnson,ajohnson,IT,IT
-```
+![PS users IT OU](../images/08-powershell/PS-users-IT-ou.png)
 
-## Users Created via Script
-| Name | Username | OU |
-|---|---|---|
-| Alice Johnson | ajohnson | Contoso/IT |
-| Robert Brown | rbrown | Contoso/IT |
-| Sarah Williams | swilliams | Contoso/Management |
-| Michael Davis | mdavis | Contoso/Management |
-| Emma Wilson | ewilson | Contoso/HR |
-| James Taylor | jtaylor | Contoso/HR |
+### Users in HR OU
 
-## Home Directories Created
-- Base path: C:\Shares\HomeDirectories
-- 8 folders created — one per user
-- NTFS permissions: each user has FullControl of own folder only
-- Domain Admins retain full access to all folders
+HR department users created and placed in the HR OU.
 
-## Screenshots
-![Bulk User Creation Output](../images/windows-server-lab/08-powershell/PS-bulk-user-creation.png)
-![Users in IT OU](../images/windows-server-lab/08-powershell/PS-users-IT-ou.png)
-![Users in Management OU](../images/windows-server-lab/08-powershell/PS-users-management-ou.png)
-![Users in HR OU](../images/windows-server-lab/08-powershell/PS-users-hr-ou.png)
-![User Report Output](../images/windows-server-lab/08-powershell/PS-user-report.png)
-![Home Folders Created](../images/windows-server-lab/08-powershell/PS-home-folders.png)
-![Home Folders Explorer](../images/windows-server-lab/08-powershell/PS-home-folders-explorer.png)
+![PS users HR OU](../images/08-powershell/PS-users-hr-ou.png)
+
+### Users in Management OU
+
+Management department users created and placed in the Management OU.
+
+![PS users management OU](../images/08-powershell/PS-users-management-ou.png)
+
+---
+
+## Get-UserReport.ps1 — AD User Reporting
+
+This script queries Active Directory and exports a report of all domain users including their OU, department, and account status to a CSV file.
+
+### User Report Output
+
+Script output showing the AD user report generated and exported to CSV.
+
+![PS user report](../images/08-powershell/PS-user-report.png)
+
+---
+
+## New-UserShare.ps1 — Home Folder Provisioning
+
+This script creates a personal home folder for each user on FS01, sets the NTFS permissions so only that user and Domain Admins have access, and maps the folder path in AD.
+
+### Home Folders Created
+
+Script output showing home folders created for each user on FS01.
+
+![PS home folders](../images/08-powershell/PS-home-folders.png)
+
+### Home Folders in Explorer
+
+Home folder directory on FS01 in File Explorer — one folder per user, confirming the script ran successfully.
+
+![PS home folders explorer](../images/08-powershell/PS-home-folders-explorer.png)
+
+---
+
+## Scripts
+
+All scripts are available in the `/scripts` folder of this repository:
+
+- [`New-LabUsers.ps1`](../scripts/New-LabUsers.ps1)
+- [`Get-UserReport.ps1`](../scripts/Get-UserReport.ps1)
+- [`New-UserShare.ps1`](../scripts/New-UserShare.ps1)
+
+---
+
+## Summary
+
+| Script | Purpose |
+|---|---|
+| New-LabUsers.ps1 | Bulk user creation from CSV |
+| Get-UserReport.ps1 | AD user report exported to CSV |
+| New-UserShare.ps1 | Home folder creation with NTFS permissions |
+
+---
+
+[← 07 — pfSense](07-pfsense.md) | [Next: 09 — Backup & DR →](09-backup-dr.md)

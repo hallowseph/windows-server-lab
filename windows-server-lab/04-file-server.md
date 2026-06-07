@@ -1,67 +1,94 @@
-# 04 — File Server (FS01)
+# 04 — File Server
 
-## Server Details
-- Hostname: FS01
-- IP Address: 192.168.10.3
-- OS: Windows Server 2025 Standard
-- Role: File Server, DFS Namespace
-- Domain: TestNet.Domain
+This section covers the setup of FS01 as the Contoso file server, including SMB share creation, DFS namespace, NTFS permissions per department, and disk quotas via File Server Resource Manager.
 
-## Setup Steps
-- Renamed to FS01 on first boot
-- Static IP configured: 192.168.10.3
-- DNS pointing to DC01: 192.168.10.1
-- Successfully joined TestNet.Domain
-- Logged in as TESTNET\Administrator
+---
 
-## Screenshots
-![FS01 Static IP](../images/windows-server-lab/04-file-server/FS01-static-ip.png)
-![FS01 Ping DC01](../images/windows-server-lab/04-file-server/FS01-ping-dc01.png)
-![FS01 Domain Join](../images/windows-server-lab/04-file-server/FS01-domain-join.png)
-![FS01 Server Manager](../images/windows-server-lab/04-file-server/FS01-server-manager.png)
+## FS01 — Initial Setup
 
-## File Server Roles Installed
-- File Server
-- File Server Resource Manager (FSRM)
-- DFS Namespaces
-- DFS Replication
+### FS01 Static IP
 
-## Shared Folders Created
-| Share Name | Path | Access |
-|---|---|---|
-| IT | C:\Shares\Departments\IT | Domain Admins: Full, Domain Users: Change |
-| Management | C:\Shares\Departments\Management | Domain Admins: Full, Domain Users: Change |
-| HR | C:\Shares\Departments\HR | Domain Admins: Full, Domain Users: Change |
-| Company | C:\Shares\Company | Domain Admins: Full, Domain Users: Read |
-| Contoso | C:\Shares\Contoso | DFS namespace root |
+FS01 assigned static IP `192.168.10.3`, DNS pointing to DC01.
+
+![FS01 static IP](../images/04-file-server/FS01-static-ip.png)
+
+### FS01 Ping Test
+
+FS01 successfully pinging DC01 at `192.168.10.1`, confirming network connectivity before domain join.
+
+![FS01 ping DC01](../images/04-file-server/FS01-ping-dc01.png)
+
+### FS01 Domain Join
+
+FS01 joined to `TestNet.Domain`.
+
+![FS01 domain join](../images/04-file-server/FS01-domain-join.png)
+
+### FS01 Roles Installed
+
+File and Storage Services, DFS Namespaces, and File Server Resource Manager roles installed on FS01.
+
+![FS01 roles installed](../images/04-file-server/FS01-roles-installed.png)
+
+### FS01 Server Manager
+
+Server Manager on FS01 confirming all required roles are installed and running.
+
+![FS01 Server Manager](../images/04-file-server/FS01-server-manager.png)
+
+---
+
+## SMB Shares
+
+### Shares List
+
+All department shares visible in File and Storage Services — IT, Management, HR, and Company shares created.
+
+![FS01 shares list](../images/04-file-server/FS01-shares-list.png)
+
+### Shares Created — Page 1
+
+First batch of SMB shares created with NTFS permissions configured per department.
+
+![FS01 shares created 1](../images/04-file-server/FS01-shares-created1.png)
+
+### Shares Created — Page 2
+
+Second batch of shares, completing the full department share structure.
+
+![FS01 shares created 2](../images/04-file-server/FS01-shares-created2.png)
+
+---
 
 ## DFS Namespace
-- Type: Standalone
-- Root: \\FS01\Contoso
-- Folders:
-  - \\FS01\Contoso\IT → \\FS01\IT
-  - \\FS01\Contoso\Management → \\FS01\Management
-  - \\FS01\Contoso\HR → \\FS01\HR
-  - \\FS01\Contoso\Company → \\FS01\Company
 
-## Disk Quotas (FSRM)
-| Path | Quota | Type |
-|---|---|---|
-| C:\Shares\Departments\IT | 1 GB | Soft limit |
-| C:\Shares\Departments\Management | 1 GB | Soft limit |
-| C:\Shares\Departments\HR | 1 GB | Soft limit |
-| C:\Shares\Company | 2 GB | Soft limit |
+### DFS Namespace
 
-## Troubleshooting Notes
-- DFS domain-based namespace failed — cannot connect to domain
-- Resolved by using standalone namespace type instead
-- Root share must exist before DFS namespace can be created
+DFS Management showing the `\\FS01\Contoso` namespace configured, with department folders mapped underneath.
 
-## Screenshots
-![FS01 Roles Installed](../images/windows-server-lab/04-file-server/FS01-roles-installed.png)
-![FS01 Shares Created](../images/windows-server-lab/04-file-server/FS01-shares-created.png)
-![FS01 Shares List](../images/windows-server-lab/04-file-server/FS01-shares-list.png)
-![FS01 DFS Created](../images/windows-server-lab/04-file-server/FS01-dfs-created.png)
-![FS01 DFS Namespace](../images/windows-server-lab/04-file-server/FS01-dfs-namespace.png)
-![FS01 Quotas](../images/windows-server-lab/04-file-server/FS01-quotas.png)
-![FS01 DFS Verified](../images/windows-server-lab/04-file-server/FS01-dfs-verified.png)
+![FS01 DFS namespace](../images/04-file-server/FS01-dfs-namespace.png)
+
+---
+
+## Disk Quotas
+
+### Disk Quotas
+
+File Server Resource Manager showing disk quota templates applied to the department shares, limiting storage per user.
+
+![FS01 quotas](../images/04-file-server/FS01-quotas.png)
+
+---
+
+## Summary
+
+| Component | Detail |
+|---|---|
+| SMB shares | IT, Management, HR, Company |
+| DFS namespace | \\FS01\Contoso |
+| NTFS permissions | Per department security group |
+| Disk quotas | Applied via FSRM |
+
+---
+
+[← 03 — Group Policy](03-group-policy.md) | [Next: 05 — IIS Web Server →](05-iis-webserver.md)

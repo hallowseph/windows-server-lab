@@ -1,66 +1,105 @@
 # 07 — pfSense Firewall
 
-## Overview
-pfSense CE 2.8.1 deployed as the network edge firewall and
-router for the Contoso lab environment. Provides NAT, stateful
-packet inspection, DNS forwarding, and firewall rules.
+This section covers the deployment of pfSense CE as the Contoso network firewall, including VM setup in Hyper-V, interface configuration, NAT routing, and custom firewall rules.
 
-## VM Details
-- Hostname: pfSense
-- Version: pfSense CE 2.8.1-RELEASE
-- Hypervisor: Hyper-V Generation 1
-- RAM: 1024 MB
-- Disk: 20 GB
+---
 
-## Network Interfaces
-| Interface | Adapter | IP | Purpose |
-|---|---|---|---|
-| WAN | hn0 (ExternalSwitch) | DHCP 192.168.68.106 | Internet facing |
-| LAN | hn1 (LabSwitch) | 192.168.10.254/24 | Internal lab gateway |
+## pfSense — VM Setup
 
-## Configuration
-| Setting | Value |
+### VM Settings
+
+pfSense VM configured in Hyper-V with two network adapters — one connected to the external switch (internet) and one to LabSwitch (internal network).
+
+![pfSense VM settings](../images/07-pfsense/pfSense-vm-settings.png)
+
+### External Switch
+
+External virtual switch created in Hyper-V to give pfSense access to the internet via the host machine's network adapter.
+
+![pfSense external switch](../images/07-pfsense/pfSense-external-switch.png)
+
+---
+
+## pfSense — Initial Configuration
+
+### Console
+
+pfSense console on first boot showing the WAN and LAN interface assignments.
+
+![pfSense console](../images/07-pfsense/pfSense-console.png)
+
+### Interface Assignment
+
+WAN and LAN interfaces assigned to the correct Hyper-V network adapters.
+
+![pfSense interface assign](../images/07-pfsense/pfSense-interface-assign.png)
+
+### Interface Confirmation
+
+Interface assignment confirmed — WAN on external adapter, LAN on LabSwitch at `192.168.10.254`.
+
+![pfSense interface confirm](../images/07-pfsense/pfSense-interface-confirm.png)
+
+### LAN Configuration
+
+LAN interface configured with static IP `192.168.10.254`, acting as the default gateway for all lab machines.
+
+![pfSense LAN config](../images/07-pfsense/pfSense-lan-config.png)
+
+---
+
+## pfSense — Web GUI
+
+### Login
+
+pfSense web GUI login page accessed from DC01 at `192.168.10.254`.
+
+![pfSense login](../images/07-pfsense/pfSense-login.png)
+
+### Setup Wizard
+
+Initial setup wizard completed — hostname, DNS, and NTP configured.
+
+![pfSense setup wizard](../images/07-pfsense/pfSense-setup-wizard.png)
+
+### Dashboard
+
+pfSense dashboard showing both interfaces online, system uptime, and current traffic.
+
+![pfSense dashboard](../images/07-pfsense/pfSense-dashboard.png)
+
+---
+
+## Firewall Rules
+
+### Firewall Rules
+
+Custom firewall rules configured on the LAN interface — default allow rule active with Telnet (port 23) explicitly blocked.
+
+![pfSense firewall rules](../images/07-pfsense/pfSense-firewall-rules.png)
+
+---
+
+## Internet Connectivity Verification
+
+### DC01 Internet Access
+
+DC01 successfully reaching the internet through pfSense NAT, confirming routing and NAT are working correctly.
+
+![pfSense DC01 internet](../images/07-pfsense/pfSense-dc01-internet.png)
+
+---
+
+## Summary
+
+| Component | Detail |
 |---|---|
-| Hostname | pfSense |
-| Domain | TestNet.Domain |
-| Primary DNS | 192.168.10.1 (DC01) |
-| Secondary DNS | 192.168.10.2 (DC02) |
-| Timezone | Pacific/Auckland |
-| Admin password | Lab password |
+| pfSense version | CE 2.8.1 |
+| WAN | External (DHCP from host) |
+| LAN | 192.168.10.254 / LabSwitch |
+| NAT | Enabled — all lab VMs route through pfSense |
+| Custom rules | Telnet blocked on LAN |
 
-## Firewall Rules Created
-| Action | Protocol | Source | Destination | Port | Description |
-|---|---|---|---|---|---|
-| Block | TCP | LAN subnets | Any | 23 | Block Telnet - insecure protocol |
+---
 
-## NAT Configuration
-- Outbound NAT: Automatic — all internal traffic NATed to WAN IP
-- Internal hosts access internet via pfSense WAN IP
-
-## Verified
-- DC01 can ping 8.8.8.8 via pfSense ✅
-- DC01 taskbar shows "Internet access" ✅
-- pfSense web GUI accessible at https://192.168.10.254 ✅
-
-## Troubleshooting Notes
-- Factory reset required after password was set during
-  Netgate installer and became unknown
-- LAN IP needed manual configuration via console option 2
-  after factory reset defaulted to 192.168.1.1
-- Web GUI login failed repeatedly — resolved by clearing
-  browser cache and cookies on DC01
-- WAN accidentally configured instead of LAN on first
-  attempt at option 2 — corrected by running option 2 again
-
-## Screenshots
-![External Switch](../images/windows-server-lab/07-pfsense/pfSense-external-switch.png)
-![VM Settings](../images/windows-server-lab/07-pfsense/pfSense-vm-settings.png)
-![Installing](../images/windows-server-lab/07-pfsense/pfSense-installing.png)
-![Interface Assignment](../images/windows-server-lab/07-pfsense/pfSense-interface-assign.png)
-![Interface Confirmed](../images/windows-server-lab/07-pfsense/pfSense-interface-confirm.png)
-![Console](../images/windows-server-lab/07-pfsense/pfSense-console.png)
-![Login Page](../images/windows-server-lab/07-pfsense/pfSense-login.png)
-![Setup Wizard](../images/windows-server-lab/07-pfsense/pfSense-setup-wizard.png)
-![Dashboard](../images/windows-server-lab/07-pfsense/pfSense-dashboard.png)
-![DC01 Internet via pfSense](../images/windows-server-lab/07-pfsense/pfSense-dc01-internet.png)
-![Firewall Rules](../images/windows-server-lab/07-pfsense/pfSense-firewall-rules.png)
+[← 06 — WSUS](06-wsus.md) | [Next: 08 — PowerShell Automation →](08-powershell-automation.md)

@@ -1,94 +1,110 @@
 # 03 — Group Policy
 
-## Overview
-Group Policy Objects (GPOs) are used to centrally manage 
-settings for users and computers in the Contoso domain.
-All GPOs are managed from DC01 via Group Policy Management Console.
+This section covers the creation and deployment of 6 Group Policy Objects across the Contoso domain, covering security, desktop enforcement, USB restriction, drive mapping, and WSUS client targeting.
 
-## GPOs Created
+---
 
-### 1. Contoso-Password-Policy
-- Linked to: TestNet.Domain
-- Type: Computer Configuration
-- Settings:
-  - Minimum password length: 8 characters
-  - Password complexity: Enabled
-  - Maximum password age: 90 days
-  - Minimum password age: 1 day
-  - Password history: 5 passwords
-  - Account lockout threshold: 5 attempts
-  - Account lockout duration: 15 minutes
-  - Reset lockout counter: 15 minutes
+## GPO Overview
 
-### 2. Contoso-Desktop-Wallpaper
-- Linked to: Contoso/Computers OU
-- Type: User Configuration
-- Settings:
-  - Wallpaper path: C:\Windows\Web\Wallpaper\Windows\img0.jpg
-  - Style: Fill
-- Verified: Wallpaper applied on PC01 and PC02
+### GPO List
 
-### 3. Contoso-Screensaver-Lock
-- Linked to: Contoso/Computers OU
-- Type: User Configuration
-- Settings:
-  - Screen saver enabled: Yes
-  - Timeout: 600 seconds (10 minutes)
-  - Password protected: Yes
+All 6 GPOs visible in Group Policy Management, linked to the appropriate OUs across the domain.
 
-### 4. Contoso-Disable-USB
-- Linked to: Contoso/Computers OU
-- Type: Computer Configuration
-- Settings:
-  - All Removable Storage classes: Deny all access: Enabled
+![GPO list](../images/03-group-policy/GPO-list.png)
 
-### 5. Contoso-IT-Drive-Map
-- Linked to: Contoso/IT OU
-- Type: User Configuration → Preferences → Drive Maps
-- Settings:
-  - Drive letter: H:
-  - Path: \\DC01\IT-Share
-  - Label: IT Share
-  - Reconnect: Yes
-- Verified: H: drive visible in File Explorer on PC01 as jsmith
+### GPO Linked to IT OU
 
-## Troubleshooting Notes
-- GPO was created but not linked to IT OU — resolved by manually
-  linking via right-click → Link an Existing GPO in GPMC
-- gpresult /r must be run as the domain user (not local admin)
-  to show user-based GPO application
-- Drive mapping applies at logon — gpupdate /force alone is not
-  sufficient, a logoff/logon cycle is required
+The IT department GPO linked directly to the IT OU, confirming targeted policy application.
 
-## Commands Used
-```powershell
-# Force Group Policy refresh
-gpupdate /force
+![GPO IT OU linked](../images/03-group-policy/GPO-IT-OU-linked.png)
 
-# Check applied GPOs for current user
-gpresult /r
+---
 
-# List all GPOs in domain
-Get-GPO -All | Select-Object DisplayName, GpoStatus | Format-Table
+## Security Policies
 
-# Create IT share on DC01
-New-Item -Path "C:\Shares\IT-Share" -ItemType Directory
-New-SmbShare -Name "IT-Share" -Path "C:\Shares\IT-Share" `
-  -FullAccess "TESTNET\Domain Admins" `
-  -ReadAccess "TESTNET\Domain Users"
-```
+### Password Policy
 
-## Screenshots
-![Password Policy Settings](../images/windows-server-lab/03-group-policy/GPO-password-policy.png)
-![Screensaver Lock Settings](../images/windows-server-lab/03-group-policy/GPO-screensaver-lock.png)
-![Desktop Wallpaper Settings](../images/windows-server-lab/03-group-policy/GPO-desktop-wallpaper.png)
-![Disable USB Settings](../images/windows-server-lab/03-group-policy/GPO-disable-usb.png)
-![Drive Mapping Settings](../images/windows-server-lab/03-group-policy/GPO-drive-mapping.png)
-![IT OU GPO Linked](../images/windows-server-lab/03-group-policy/GPO-IT-OU-linked.png)
-![GPO Result DC01](../images/windows-server-lab/03-group-policy/GPO-gpresult-dc01.png)
-![H Drive Mapped on PC01](../images/windows-server-lab/03-group-policy/GPO-drive-map-working.png)
-![GPO Result DC01 Part 2](../images/windows-server-lab/03-group-policy/GPO-gpresult2-dc01.png)
-![GPO List](../images/windows-server-lab/03-group-policy/GPO-list.png)
-![Wallpaper on PC01](../images/windows-server-lab/03-group-policy/GPO-wallpaper-pc01.png)
-![Wallpaper on PC02](../images/windows-server-lab/03-group-policy/GPO-wallpaper-pc02.png)
-![Account Lockout Policy](../images/windows-server-lab/03-group-policy/GPO-account-lockout-policy.png)
+Password policy GPO configured with complexity requirements, minimum length, and password history settings.
+
+![GPO password policy](../images/03-group-policy/GPO-password-policy.png)
+
+### Account Lockout Policy
+
+Account lockout policy set — locks accounts after failed login attempts to protect against brute force.
+
+![GPO account lockout policy](../images/03-group-policy/GPO-account-lockout-policy.png)
+
+---
+
+## Desktop Enforcement
+
+### Desktop Wallpaper
+
+GPO enforcing the Contoso desktop wallpaper across all domain computers.
+
+![GPO desktop wallpaper](../images/03-group-policy/GPO-desktop-wallpaper.png)
+
+### Screensaver Lock
+
+Screensaver lock policy configured — screen locks automatically after 10 minutes of inactivity.
+
+![GPO screensaver lock](../images/03-group-policy/GPO-screensaver-lock.png)
+
+---
+
+## USB Restriction
+
+### Disable USB Storage
+
+GPO blocking USB storage devices across all domain computers to prevent unauthorised data transfer.
+
+![GPO disable USB](../images/03-group-policy/GPO-disable-usb.png)
+
+---
+
+## Drive Mapping
+
+### H: Drive Mapping — Policy
+
+GPO configured to map the H: drive to the IT department's home folder share on FS01.
+
+![GPO drive mapping](../images/03-group-policy/GPO-drive-mapping.png)
+
+### H: Drive Mapping — Working
+
+H: drive successfully mapped on a domain client, confirming the GPO is applying correctly.
+
+![GPO drive map working](../images/03-group-policy/GPO-drive-map-working.png)
+
+---
+
+## GPO Verification
+
+### GPResult — Page 1
+
+`gpresult /r` run on DC01 showing which GPOs are applied to the computer and user, confirming policies are being processed.
+
+![GPO gpresult 1](../images/03-group-policy/GPO-gpresult1-dc01.png)
+
+### GPResult — Page 2
+
+Second page of `gpresult /r` output showing additional applied policies and any denied GPOs.
+
+![GPO gpresult 2](../images/03-group-policy/GPO-gpresult2-dc01.png)
+
+---
+
+## Summary
+
+| GPO | Scope | Purpose |
+|---|---|---|
+| Password Policy | Domain | Complexity, history, length |
+| Account Lockout | Domain | Brute force protection |
+| Desktop Wallpaper | Domain | Contoso branding enforcement |
+| Screensaver Lock | Domain | 10-minute idle lock |
+| USB Restriction | Domain | Block removable storage |
+| H: Drive Mapping | IT OU | Map home folder share |
+
+---
+
+[← 02 — Active Directory, DNS & DHCP](02-ad-dns-dhcp.md) | [Next: 04 — File Server →](04-file-server.md)
