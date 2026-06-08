@@ -1,4 +1,4 @@
-vvv# Windows Server Enterprise Lab
+# Windows Server Enterprise Lab
 
 A fully functional enterprise network built on Microsoft 
 Hyper-V, simulating a real-world IT infrastructure for a 
